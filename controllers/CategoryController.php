@@ -103,7 +103,14 @@ class CategoryController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
-    {
+    {   
+        $model = Category::findOne($id)->claims;
+   
+        foreach ($model as $key => $value) 
+        {
+             @unlink(Yii::getAlias('@app') . '/data/images/' . $value->photo);
+        }
+        
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
