@@ -34,7 +34,7 @@ class Claim extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description'], 'required' , 'message' => 'Заполните поле {attribute}'],
+            [['title', 'description', 'category_id'], 'required' , 'message' => 'Заполните поле {attribute}'],
             [['status', 'cause'], 'string'],
             [['category_id'], 'integer'],
             [['date'], 'safe'],
@@ -73,6 +73,8 @@ class Claim extends \yii\db\ActiveRecord
     {
         if($this->validate())
         {
+            $this->user_id = Yii::$app->user->identity->id;
+            
             $this->date = date('Y-m-d H:i:s');
 
             $this->photo->name = time() . $this->photo->name;
