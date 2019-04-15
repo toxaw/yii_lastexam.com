@@ -56,6 +56,8 @@ $config = [
             'logout' => 'site/logout',
             'myclaim' => 'claim/myclaim',
             'create' => 'claim/add',
+            'allclaim' => 'claim/allclaim',
+            'claim/<claim_id:\d+>' => 'claim/edit',
             ],
         ],
         

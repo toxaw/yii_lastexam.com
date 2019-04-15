@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use app\models\Users;
 
-$this->title = 'Регистрация';
+$this->title = 'Изменение статуса';
 ?>
 <div class="site-signup">
     <div class="row">

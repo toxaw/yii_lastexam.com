@@ -15,7 +15,7 @@ use app\models\Claim;
 use app\models\Category;
 
 use yii\bootstrap\ActiveForm;
-
+use yii\web\NotFoundHttpException;
 
 use yii\web\UploadedFile;
 
@@ -84,6 +84,8 @@ class ClaimController extends Controller
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) 
         {
+            $model->scenario = 'ajax';
+
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             return ActiveForm::validate($model);
@@ -105,31 +107,6 @@ class ClaimController extends Controller
                     'model' => $model,
                     'categories' => \yii\helpers\ArrayHelper::map(Category::find()->all(), 'id', 'name')
         ]);
-
-       /* if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) 
-        {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-            return ActiveForm::validate($model);
-        }
-
-        if ($model->load(Yii::$app->request->post())) 
-        {
-            if ($user = $model->login()) 
-            {
-                if (Yii::$app->getUser()->login($user)) 
-                {
-                    return $this->goHome();
-                }
-            }
-        }
-        
-        $model->password = '';
-        
-        return $this->render('login', [
-                    'model' => $model,
-        ]);*/
-
     }
 
     public function actionMyclaim()
@@ -138,4 +115,66 @@ class ClaimController extends Controller
       'date' => SORT_DESC
    ])->all()]);
     }
+
+    public function actionAllclaim()
+    {
+        return $this->render('allclaim', ['claims' => Claim::find()->orderBy([
+      'date' => SORT_DESC
+   ])->all()]);
+    }
+
+    public function actionEdit($claim_id = null)
+    {   
+        if($model = Claim::findOne($claim_id))
+        {   
+            $status = preg_replace('/(^enum\(\')|(,\'\')|\)$/','',$model->tableSchema->columns['status']->dbType);
+
+            $status = explode("','", substr($status, 0, -1));
+
+            $photo = $model->photo;
+
+            if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()))
+            {
+                $model->status = $status[$model->status];
+
+                if($model->status=='Отклонена')
+                {
+                    $model->scenario = 'editcause';
+                }
+
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                return ActiveForm::validate($model);
+            }
+
+            if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post()))
+            {
+                $model->status = $status[$model->status];
+ 
+                if($model->status=='Отклонена')
+                {
+                    $model->scenario = 'editcause';
+                }
+                else if ($model->status=='Решена')
+                {               
+                    $model->scenario = 'editphoto'; 
+
+                    $model->photo = UploadedFile::getInstance($model, 'photo');
+                }  
+
+                if($model->edit())
+                {
+                    return $this->redirect(['claim/allclaim']);
+                }
+                else
+                {
+                    $model->photo = $photo;
+                }
+            }
+
+            return $this->render('claim_edit', ['claim' => $model, 'status' => $status, 'is_post' => Yii::$app->request->isPost]);
+        }
+
+        throw new NotFoundHttpException('Заявка не найдена');
+    }   
 }

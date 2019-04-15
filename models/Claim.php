@@ -34,13 +34,15 @@ class Claim extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'category_id'], 'required' , 'message' => 'Заполните поле {attribute}'],
+            [['title', 'description', 'category_id'], 'required' , 'message' => 'Заполните поле {attribute}', 'on' => ['ajax', 'notajax']],
             [['status', 'cause'], 'string'],
+            [['cause'],'required', 'on' => ['editcause'], 'message' => 'Заполните поле {attribute}'],
             [['category_id'], 'integer'],
             [['date'], 'safe'],
             [['title', 'description'], 'string', 'max' => 255],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['photo'], 'file', 'skipOnEmpty' => false, 'extensions' => 'jpg, jpeg, png, bmp', 'maxSize' => 1024*1024*10, 'on' => 'notajax']
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id'],
+            'on' => ['ajax', 'notajax'] ],
+            [['photo'], 'file', 'skipOnEmpty' => false, 'extensions' => 'jpg, jpeg, png, bmp', 'maxSize' => 1024*1024*10, 'on' => ['notajax','editphoto']]
         ];
     }
 
@@ -53,11 +55,11 @@ class Claim extends \yii\db\ActiveRecord
             'id' => 'ID',
             'title' => 'Название заявки',
             'description' => 'Описание заявки',
-            'status' => 'Status',
+            'status' => 'Статус',
             'category_id' => 'Категория',
             'photo' => 'Фото',
             'date' => 'Date',
-            'cause' => 'Cause',
+            'cause' => 'Причина',
         ];
     }
 
@@ -88,5 +90,22 @@ class Claim extends \yii\db\ActiveRecord
 
             return $this->save(false);
         }
+    }
+
+    public function edit()
+    {
+        if($this->validate())
+        {
+            if($this->scenario=='editphoto')
+            {
+                @unlink(Yii::getAlias('@app') . '/data/images/' . $this->findOne($this->id)->photo);
+
+                $this->photo->name = time() . $this->photo->name;
+
+                $this->photo->saveAs(Yii::getAlias('@app') . '/data/images/' . $this->photo->name);
+            }
+            
+            return $this->save(false);
+        } 
     }
 }
