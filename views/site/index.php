@@ -1,53 +1,41 @@
 <?php
 
-/* @var $this yii\web\View */
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use app\models\Users;
 
-$this->title = 'My Yii Application';
+$this->title = 'Решенные заявки';
 ?>
-<div class="site-index">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
+            <h1>Решенные заявки</h1>
+            <br>
+            <br>
+  <div class="body-content">
 
         <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+        <?php if (empty($claims)):?>
+            <h2>Пока что нет заявок</h2>
+        <?php else:?>
+            <?php foreach ($claims as $claim):?>           
+            <div class="col-lg-6" style ="border: 1px solid gray">
+                <label>Дата создания:<p><?= $claim->date ?></p></label>
+                <br>
+                <label>Название:<h2><?= $claim->title ?></h2></label>
+                <br>
+                <h2>Описание</h2>
+                <p><?= $claim->description ?></p>
+                <label>Категория:<h3><?= $claim->category->name ?></h3></label>
+                <br>
+                <label>Статус:<h3><?= $claim->status ?></h3></label>
+                <br>
+                <?php if($claim->cause):?><label>Причина:<h2><?= $claim->cause ?></h2></label><?php endif;?>
+                <br>               
+                <img class="img-thumbnail" src="<?=  Yii::getAlias('@web').'/data/images/' . $claim->photo ?>">
+                <br>
+                <p><a class="btn btn-default" href="claim/<?= $claim->id ?>">Изменить статус</a></p>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+            <?php endforeach;?>
+        <?php endif;?>
         </div>
-
     </div>
-</div>

@@ -10,7 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\Registr;
 use app\models\Login;
 use app\components\Controller;
-
+use app\models\Claim;
 use yii\bootstrap\ActiveForm;
 
 class SiteController extends Controller
@@ -64,7 +64,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', ['claims' => Claim::find()->where(['status'=>'Решена'])->orderBy([
+          'date' => SORT_DESC
+       ])->limit(8)->all()]);
     }
 
     /**
