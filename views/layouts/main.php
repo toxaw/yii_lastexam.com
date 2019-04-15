@@ -50,7 +50,7 @@ AppAsset::register($this);
     {
         if(Yii::$app->user->identity->is_admin) 
         {
-
+            $menu[] = ['label' => 'Все заявки', 'url' => ['/allclaim']];
         }   
         else
         {

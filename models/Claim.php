@@ -69,12 +69,17 @@ class Claim extends \yii\db\ActiveRecord
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
     public function create()
     {
         if($this->validate())
         {
-            $this->user_id = Yii::$app->user->identity->id;
-            
+            $this->user_id = Yii::$app->user->id;
+
             $this->date = date('Y-m-d H:i:s');
 
             $this->photo->name = time() . $this->photo->name;

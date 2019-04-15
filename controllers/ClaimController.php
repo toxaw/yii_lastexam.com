@@ -131,4 +131,11 @@ class ClaimController extends Controller
         ]);*/
 
     }
+
+    public function actionMyclaim()
+    {
+        return $this->render('myclaim', ['claims' => Claim::find(['user_id'=>Yii::$app->user->id])->orderBy([
+      'date' => SORT_DESC
+   ])->all()]);
+    }
 }
