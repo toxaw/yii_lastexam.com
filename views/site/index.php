@@ -33,7 +33,6 @@ $this->title = 'Решенные заявки';
                 <br>               
                 <img class="img-thumbnail" src="<?=  Yii::getAlias('@web').'/data/images/' . $claim->photo ?>">
                 <br>
-                <p><a class="btn btn-default" href="claim/<?= $claim->id ?>">Изменить статус</a></p>
             </div>
             <?php endforeach;?>
         <?php endif;?>
