@@ -1,34 +1,28 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model app\models\LoginForm */
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
-$this->title = 'Авторизация';
+$this->title = 'Login';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="col-md-6">
+<div class="site-login">
+    <h1><?= Html::encode($this->title) ?></h1>
 
-    <h1>Введите ваши учетные данные</h1>
-
-    <?php $form = ActiveForm::begin([
-        'layout' => 'horizontal',
-        'enableAjaxValidation' => true,
-        'fieldConfig' => [
-            'template' => '{label}<div>{input}</div><div>{error}</div>',
-            'labelOptions' => ['class' => 'control-label'],
-        ],
-    ]); ?>
-
-        <?= $form->field($model, 'login')->textInput(['autofocus' => true]) ?>
-
-        <?= $form->field($model, 'password')->passwordInput() ?>
-
-        <div class="form-group">
-            <?= Html::submitButton('Войти', ['class' => 'btn btn-primary']) ?>
-        </div>
-
-    <?php ActiveForm::end(); ?>
+    <p>Please fill out the following fields to login:</p>
+    
+    
+    <div class='errors' style="color:red;opacity:0" >
+    </div>
+    
+    <div class='success' style="color:green">
+    </div>
+    
+    <form id="login-form-ajax">
+        <input type="text" name="login">
+        <input type="password" name="password">
+        <input type="checkbox" name="remember">
+        <input type="submit">
+    </form>
 </div>

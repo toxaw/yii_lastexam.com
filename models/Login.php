@@ -46,7 +46,14 @@ class Login extends \yii\base\Model
     {
         if($this->validate())
         {
-            return User::findOne(['login' => $this->login]);          
+            if($user = User::findOne(['login' => $this->login]))
+            {
+                return $user;
+            }          
+
+            $errors['login'] = ['Неверный логин или пароль!'];
+
+            $this->addErrors($errors);
         }
     }
 }

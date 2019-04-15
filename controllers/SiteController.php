@@ -74,7 +74,7 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionLogin()
+   /* public function actionLogin()
     {
         $model = new Login();
         
@@ -96,6 +96,51 @@ class SiteController extends Controller
             }
         }
         
+        $model->password = '';
+        
+        return $this->render('login', [
+                    'model' => $model,
+        ]);
+
+    }*/
+
+    public function actionLogin()
+    {
+        $model = new Login();
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) 
+        {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            
+            if($model->validate())
+            {
+                if ($user = $model->login()) 
+                {
+                    Yii::$app->getUser()->login($user);
+                }
+                else
+                {
+                    return ['login-login' => $model->getErrors()['login']];
+                }
+            }
+            else
+            {
+                return ActiveForm::validate($model);
+            }
+        }
+
+        if ($model->load(Yii::$app->request->post())) 
+        {
+            if ($user = $model->login()) 
+            {
+                if (Yii::$app->getUser()->login($user)) 
+                {
+                    return Yii::$app->user->identity->is_admin?$this->goHome():$this->redirect(['claim/myclaim']);
+                }
+            }
+        }
+        print_r($model->getErrors());
         $model->password = '';
         
         return $this->render('login', [
